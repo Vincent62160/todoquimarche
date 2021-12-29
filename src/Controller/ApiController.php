@@ -26,6 +26,7 @@ class ApiController extends AbstractController
             $temp->id = $todo->getId();
             $temp->action = $todo->getAction();
             $temp->isDone = $todo->getIsDone();
+            $temp->utilisateur = $todo->getUtilisateur();
             array_push($arr, $temp);
         }
         $obj->todos = $arr;
@@ -75,12 +76,14 @@ class ApiController extends AbstractController
     {
         $obj = new \stdClass();
         $action = $request->request->get('action');
+        $action2 = $request->request->get('action2');
         if ($action == null || $action == "") {
             $obj->status = 500;
             $obj->error = "Champs manquants";
         } else {
             $todo = new Todo();
             $todo->setAction($action);
+            $todo->setUtilisateur($action2);
             $todo->setIsDone(false);
             $em = $this->getDoctrine()->getManager();
             $em->persist($todo);

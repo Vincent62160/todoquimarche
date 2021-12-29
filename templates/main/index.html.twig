@@ -7,7 +7,7 @@
             <div class="col-md-8">
                 <table id="myTodoTable" class="table table-striped">
                     <thead class="thead-dark">
-                    <th>ID</th>
+                    <th>Auteur</th>
                     <th>Action</th>
                     <th></th>
                     </thead>
@@ -29,6 +29,11 @@
                                 <label for="actionInput">Action</label>
                                 <input type="text" class="form-control" id="actionInput"
                                        placeholder="Action a faire">
+                            </div>
+                            <div class="form-group">
+                                <label for="actionUtilisateur">Action</label>
+                                <input type="text" value="{{app.user.username}}" class="form-control" id="actionUtilisateur"
+                                readonly="readonly">
                             </div>
                             <div class="text-center">
                                 <button class="btn btn-sm btn-success" type="submit">Ajouter la tache</button>
@@ -56,6 +61,7 @@
                     console.log(todo)
                     let lockBtn
                     let todoName
+                    let todoUtilisateur
 
                     if (todo.isDone) {
                         lockBtn = `<button class="btn btn-sm btn-warning" onclick="toggleTodo(` + todo.id + `)">
@@ -66,6 +72,7 @@
                                     </button>
                                     `
                         todoName = "<span style='text-decoration: line-through;'>" + todo.action + "</span>"
+                        todoUtilisateur = "<span style='text-decoration: line-through;'>" + todo.utilisateur + "</span>"
                     } else {
                         lockBtn = `<button class="btn btn-sm btn-warning" onclick="toggleTodo(` + todo.id + `)">
                                         <i class="fas fa-lock"></i>
@@ -75,12 +82,13 @@
                                     </button>
                                     `
                         todoName = "<span>" + todo.action + "</span>"
+                        todoUtilisateur = "<span>" + todo.utilisateur + "</span>"
 
                     }
 
 
                     let str = `<tr data-id="` + todo.id + `">
-                                    <td>` + todo.id + `</td>
+                                    <td>` + todoUtilisateur + `</td>
                                     <td>` + todoName + ` </td>
                                     <td> ` + lockBtn + ` </td>
                                 </tr>`
@@ -95,10 +103,12 @@
                 event.preventDefault()
                 //on définit la valeur de l'input comme étant la variable todoAction
                 let todoAction = $('#actionInput').val()
+                let todoAction2 = $('#actionUtilisateur').val()
                 //on lance la requete ajax (en post)
                 $.post("{{ path('new_todo') }}",
                     {
-                        action: todoAction
+                        action: todoAction,
+                        action2: todoAction2
                     }
                     , function (data) {
                         console.log(data)
@@ -114,12 +124,14 @@
                                     </button>
                                     `
                             let todoName = "<span>" + todoAction + "</span>"
+                            let todoUsername ="<span>" + todoAction2 + '</span>'
 
                             let str = `<tr data-id="` + data.id + `">
-                                    <td>` + data.id + `</td>
+                                    <td>` + todoUsername + `</td>
                                     <td>` + todoName + ` </td>
                                     <td> `+ lockBtn +` </td>
                                 </tr>`
+                                
                             myTableBody.append(str)
                             $('#actionInput').val('')
                         }
